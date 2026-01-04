@@ -90,58 +90,44 @@ This is a comprehensive **Lost and Found Management System** that uses **Artific
 
 ## 📸 Screenshots
 
-### Home Page
 <div align="center">
-  <img src="screenshot/home.PNG" alt="Home Page" width="800"/>
-  <p><em>Main landing page with navigation and features</em></p>
-</div>
+
+### Home Page
+<img src="screenshot/home.PNG" alt="Home Page" width="90%"/>
+<p><em>Main landing page with navigation and features</em></p>
 
 ### Login Page
-<div align="center">
-  <img src="screenshot/login.PNG" alt="Login Page" width="800"/>
-  <p><em>User authentication with Google OAuth option</em></p>
-</div>
+<img src="screenshot/login.PNG" alt="Login Page" width="90%"/>
+<p><em>User authentication with Google OAuth option</em></p>
 
 ### Lost Item Form
-<div align="center">
-  <img src="screenshot/lost form.PNG" alt="Lost Item Form" width="800"/>
-  <p><em>Report a lost item with detailed description</em></p>
-</div>
+<img src="screenshot/lost-form.PNG" alt="Lost Item Form" width="90%"/>
+<p><em>Report a lost item with detailed description</em></p>
 
 ### Lost & Found Reports
-<div align="center">
-  <img src="screenshot/lost-found.PNG" alt="Lost and Found Reports" width="800"/>
-  <p><em>View all lost and found items</em></p>
-</div>
+<img src="screenshot/lost-found.PNG" alt="Lost and Found Reports" width="90%"/>
+<p><em>View all lost and found items</em></p>
 
 ### Search Functionality
-<div align="center">
-  <img src="screenshot/search.PNG" alt="Search Page" width="800"/>
-  <p><em>Advanced search with semantic matching</em></p>
-</div>
+<img src="screenshot/search.PNG" alt="Search Page" width="90%"/>
+<p><em>Advanced search with semantic matching</em></p>
 
 ### Admin Dashboard
-<div align="center">
-  <img src="screenshot/admin.PNG" alt="Admin Dashboard" width="800"/>
-  <p><em>Complete admin panel for managing reports</em></p>
-</div>
+<img src="screenshot/admin.PNG" alt="Admin Dashboard" width="90%"/>
+<p><em>Complete admin panel for managing reports</em></p>
 
 ### Reports Management
-<div align="center">
-  <img src="screenshot/reports.PNG" alt="Reports Management" width="800"/>
-  <p><em>Admin view of all system reports</em></p>
-</div>
+<img src="screenshot/reports.PNG" alt="Reports Management" width="90%"/>
+<p><em>Admin view of all system reports</em></p>
 
 ### Contact Page
-<div align="center">
-  <img src="screenshot/contact.PNG" alt="Contact Page" width="800"/>
-  <p><em>Contact form and information</em></p>
-</div>
+<img src="screenshot/contact.PNG" alt="Contact Page" width="90%"/>
+<p><em>Contact form and information</em></p>
 
 ### Password Reset
-<div align="center">
-  <img src="screenshot/psw.PNG" alt="Password Reset" width="800"/>
-  <p><em>Password recovery functionality</em></p>
+<img src="screenshot/psw.PNG" alt="Password Reset" width="90%"/>
+<p><em>Password recovery functionality</em></p>
+
 </div>
 
 ---
@@ -480,4 +466,3 @@ For technical support or questions:
 ⭐ Star this repo if you find it helpful!
 
 </div>
-
