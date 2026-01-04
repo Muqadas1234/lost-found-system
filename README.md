@@ -101,7 +101,7 @@ This is a comprehensive **Lost and Found Management System** that uses **Artific
 <p><em>User authentication with Google OAuth option</em></p>
 
 ### Lost Item Form
-<img src="screenshot/lost-form.PNG" alt="Lost Item Form" width="90%"/>
+<img src="screenshot/lost%20form.PNG" alt="Lost Item Form" width="90%"/>
 <p><em>Report a lost item with detailed description</em></p>
 
 ### Lost & Found Reports
