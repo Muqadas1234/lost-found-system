@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Item Recovery Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e6f2ff 0%, #f0f8ff 50%, #ffffff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        /* Left Panel - Sign In */
+        .signin-panel {
+            flex: 1;
+            background: linear-gradient(180deg, #003366 0%, #004a99 50%, #1e73be 100%);
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+        }
+
+        .signin-panel h1 {
+            color: white;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .signin-panel p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .signin-btn {
+            background: white;
+            color: #003366;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 50px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .signin-btn:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Right Panel - Create Account */
+        .signup-panel {
+            flex: 1;
+            background: white;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .signup-panel h2 {
+            color: #1a1a1a;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .social-icon:hover {
+            border-color: #1e73be;
+            background: #e6f2ff;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1e73be;
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 18px;
+            padding: 5px;
+        }
+
+        .password-toggle:hover {
+            color: #1e73be;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 15px;
+            background: #1e73be;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .signup-btn:hover {
+            background: #004a99;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 115, 190, 0.3);
+        }
+
+        .signup-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #1e73be;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .google-signin-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .google-signin-container .divider {
+            margin: 20px 0;
+        }
+
+        #google-signin-button {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .auth-container {
+                max-width: 900px;
+            }
+            
+            .signin-panel {
+                padding: 50px 40px;
+            }
+            
+            .signup-panel {
+                padding: 50px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .auth-container {
+                flex-direction: column;
+                max-width: 100%;
+                min-height: auto;
+                border-radius: 20px;
+            }
+
+            .signin-panel {
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
+                padding: 40px 30px;
+                min-height: 250px;
+            }
+
+            .signup-panel {
+                padding: 40px 30px;
+            }
+
+            .signin-panel h1 {
+                font-size: 32px;
+                margin-bottom: 15px;
+            }
+
+            .signin-panel p {
+                font-size: 14px;
+                margin-bottom: 30px;
+            }
+
+            .signup-panel h2 {
+                font-size: 28px;
+                margin-bottom: 25px;
+            }
+            
+            .signin-btn {
+                padding: 12px 40px;
+                font-size: 14px;
+            }
+            
+            .social-icons {
+                gap: 10px;
+                margin-bottom: 25px;
+            }
+            
+            .social-icon {
+                width: 45px;
+                height: 45px;
+            }
+            
+            .form-group input {
+                padding: 12px 18px;
+                font-size: 14px;
+            }
+            
+            .signup-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .google-signin-container {
+                margin: 20px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .auth-container {
+                border-radius: 15px;
+            }
+
+            .signin-panel {
+                padding: 30px 20px;
+                min-height: 200px;
+            }
+
+            .signup-panel {
+                padding: 30px 20px;
+            }
+
+            .signin-panel h1 {
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+
+            .signin-panel p {
+                font-size: 13px;
+                margin-bottom: 25px;
+            }
+
+            .signup-panel h2 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .signin-btn {
+                padding: 10px 30px;
+                font-size: 13px;
+            }
+            
+            .social-icons {
+                gap: 8px;
+                margin-bottom: 20px;
+            }
+            
+            .social-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+            
+            .divider {
+                margin: 20px 0;
+                font-size: 12px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .form-group input {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            .signup-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .password-toggle {
+                right: 10px;
+                font-size: 16px;
+            }
+            
+            .alert {
+                padding: 12px 15px;
+                font-size: 13px;
+            }
+            
+            .login-link {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Left Panel - Sign In -->
+        <div class="signin-panel">
+            <h1>Welcome Back!</h1>
+            <p>Enter your personal details to use all of our features</p>
+            <a href="/login" class="signin-btn">SIGN IN</a>
+        </div>
+
+        <!-- Right Panel - Create Account -->
+        <div class="signup-panel">
+            <h2>Create Account</h2>
+            
+            <div id="alert" class="alert"></div>
+
+            <!-- Social Icons -->
+            <div class="social-icons">
+                <div class="social-icon">G</div>
+                <div class="social-icon">f</div>
+                <div class="social-icon">in</div>
+                <div class="social-icon">@</div>
+            </div>
+
+            <div class="divider">
+                <span>or use your email for registration</span>
+            </div>
+
+            <!-- Signup Form -->
+            <form id="signupForm">
+                <div class="form-group">
+                    <input type="text" id="name" name="name" required placeholder="Name">
+                </div>
+
+                <div class="form-group">
+                    <input type="email" id="email" name="email" required placeholder="Email">
+                </div>
+
+                <div class="form-group">
+                    <div class="password-container">
+                        <input type="password" id="password" name="password" required placeholder="Password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')" id="password-toggle-btn">👁</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="password-container">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm Password">
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')" id="confirmPassword-toggle-btn">👁</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="signup-btn" id="signupBtn">SIGN UP</button>
+            </form>
+
+            <!-- Google Sign-In Button -->
+            {% if google_client_id %}
+            <div class="google-signin-container" data-google-client-id="{{ google_client_id }}">
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+                <div id="google-signin-button"></div>
+            </div>
+            {% endif %}
+
+            <div class="login-link">
+                Already have an account? <a href="/login">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const signupBtn = document.getElementById('signupBtn');
+            const alert = document.getElementById('alert');
+            
+            if (!name || !email || !password || !confirmPassword) {
+                showAlert('error', 'Please fill in all required fields.');
+                return;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAlert('error', 'Please enter a valid email address.');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert('error', 'Password must be at least 6 characters long.');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showAlert('error', 'Passwords do not match.');
+                return;
+            }
+            
+            signupBtn.disabled = true;
+            if (alert) alert.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        full_name: name,
+                        email: email,
+                        password: password,
+                        student_id: '',
+                        phone: ''
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('success', data.message);
+                    setTimeout(() => {
+                        window.location.href = '/verify?email=' + encodeURIComponent(email);
+                    }, 1500);
+                } else {
+                    showAlert('error', data.message || 'Registration failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                showAlert('error', 'An error occurred. Please try again.');
+            } finally {
+                signupBtn.disabled = false;
+            }
+        });
+        
+        function showAlert(type, message) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+        
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const toggleBtn = document.getElementById(fieldId + '-toggle-btn');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleBtn.textContent = '🚫';
+            } else {
+                passwordField.type = 'password';
+                toggleBtn.textContent = '👁';
+            }
+        }
+
+        // Auto-focus on name field
+        document.getElementById('name').focus();
+
+        // Google Sign-In Integration
+        const googleContainer = document.querySelector('.google-signin-container');
+        const googleClientId = googleContainer ? googleContainer.getAttribute('data-google-client-id') : null;
+        
+        if (googleClientId) {
+            (function() {
+                const script = document.createElement('script');
+                script.src = 'https://accounts.google.com/gsi/client';
+                script.async = true;
+                script.defer = true;
+                script.onload = function() {
+                    google.accounts.id.initialize({
+                        client_id: googleClientId,
+                        callback: handleGoogleSignIn
+                    });
+                    
+                    google.accounts.id.renderButton(
+                        document.getElementById('google-signin-button'),
+                        {
+                            theme: 'outline',
+                            size: 'large',
+                            width: '100%',
+                            text: 'signup_with',
+                            locale: 'en'
+                        }
+                    );
+                };
+                document.head.appendChild(script);
+            })();
+
+            function handleGoogleSignIn(response) {
+                const alert = document.getElementById('alert');
+                const signupBtn = document.getElementById('signupBtn');
+                
+                signupBtn.disabled = true;
+                if (alert) alert.style.display = 'none';
+                
+                fetch('/api/google-auth/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        credential: response.credential
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        sessionStorage.setItem('userName', data.user.full_name);
+                        sessionStorage.setItem('userEmail', data.user.email);
+                        sessionStorage.setItem('userId', data.user.id);
+                        
+                        showAlert('success', data.message || 'Account created and logged in successfully!');
+                        setTimeout(() => {
+                            window.location.href = '/home';
+                        }, 1500);
+                    } else {
+                        showAlert('error', data.message || 'Google authentication failed.');
+                        signupBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Google sign-in error:', error);
+                    showAlert('error', 'An error occurred during Google sign-in. Please try again.');
+                    signupBtn.disabled = false;
+                });
+            }
+        }
+    </script>
+</body>
+</html>

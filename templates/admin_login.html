@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Item Recovery Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e6f2ff 0%, #f0f8ff 50%, #ffffff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        /* Left Panel - Admin Welcome */
+        .signin-panel {
+            flex: 1;
+            background: linear-gradient(180deg, #003366 0%, #004a99 50%, #1e73be 100%);
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+        }
+
+        .signin-panel h1 {
+            color: white;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .signin-panel p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .signin-btn {
+            background: white;
+            color: #003366;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 50px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .signin-btn:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Right Panel - Admin Login Form */
+        .login-panel {
+            flex: 1;
+            background: white;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-panel h2 {
+            color: #1a1a1a;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .instructions-box {
+            background: rgba(30, 115, 190, 0.1);
+            border: 2px solid rgba(30, 115, 190, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .instructions-box h3 {
+            color: #1e73be;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .instructions-box ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .instructions-box p {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #1e73be;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1e73be;
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 50px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 18px;
+            padding: 5px;
+            z-index: 10;
+        }
+
+        .password-toggle:hover {
+            color: #1e73be;
+        }
+
+        .admin-btn {
+            width: 100%;
+            padding: 15px;
+            background: #1e73be;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .admin-btn:hover {
+            background: #004a99;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 115, 190, 0.3);
+        }
+
+        .admin-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #1e73be;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .auth-container {
+                max-width: 900px;
+            }
+            
+            .signin-panel {
+                padding: 50px 40px;
+            }
+            
+            .login-panel {
+                padding: 50px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .auth-container {
+                flex-direction: column;
+                max-width: 100%;
+                min-height: auto;
+                border-radius: 20px;
+            }
+
+            .signin-panel {
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
+                padding: 40px 30px;
+                min-height: 250px;
+            }
+
+            .login-panel {
+                padding: 40px 30px;
+            }
+
+            .signin-panel h1 {
+                font-size: 32px;
+                margin-bottom: 15px;
+            }
+
+            .signin-panel p {
+                font-size: 14px;
+                margin-bottom: 30px;
+            }
+
+            .login-panel h2 {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+            
+            .instructions-box {
+                padding: 15px;
+                font-size: 13px;
+            }
+            
+            .instructions-box h3 {
+                font-size: 16px;
+            }
+            
+            .signin-btn {
+                padding: 12px 40px;
+                font-size: 14px;
+            }
+            
+            .form-group input {
+                padding: 12px 18px;
+                font-size: 14px;
+            }
+            
+            .admin-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .auth-container {
+                border-radius: 15px;
+            }
+
+            .signin-panel {
+                padding: 30px 20px;
+                min-height: 200px;
+            }
+
+            .login-panel {
+                padding: 30px 20px;
+            }
+
+            .signin-panel h1 {
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+
+            .signin-panel p {
+                font-size: 13px;
+                margin-bottom: 25px;
+            }
+
+            .login-panel h2 {
+                font-size: 24px;
+                margin-bottom: 15px;
+            }
+            
+            .instructions-box {
+                padding: 12px;
+                font-size: 12px;
+                margin-bottom: 20px;
+            }
+            
+            .instructions-box h3 {
+                font-size: 15px;
+            }
+            
+            .instructions-box ol {
+                margin-left: 15px;
+                font-size: 12px;
+            }
+            
+            .signin-btn {
+                padding: 10px 30px;
+                font-size: 13px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .form-group label {
+                font-size: 13px;
+            }
+            
+            .form-group input {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            .admin-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .password-toggle {
+                right: 10px;
+                font-size: 16px;
+            }
+            
+            .alert {
+                padding: 12px 15px;
+                font-size: 13px;
+            }
+            
+            .back-link a {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Left Panel - Admin Welcome -->
+        <div class="signin-panel">
+            <h1>Admin Portal</h1>
+            <p>Access the admin dashboard to manage the Item Recovery Portal</p>
+            <button type="button" class="signin-btn">ACCESS DASHBOARD</button>
+        </div>
+
+        <!-- Right Panel - Admin Login Form -->
+        <div class="login-panel">
+            <h2>Admin Login</h2>
+            
+            <div id="alert" class="alert"></div>
+
+            <div class="instructions-box">
+                <h3>Admin Login Instructions</h3>
+                <ol>
+                    <li>Enter your <strong>Admin Email</strong> (the email you used to register)</li>
+                    <li>Enter your <strong>Password</strong></li>
+                    <li>Click <strong>"Access Dashboard"</strong> button</li>
+                    <li>You will be redirected to the Admin Dashboard</li>
+                </ol>
+                <p><strong>Note:</strong> Only users with admin privileges can access this dashboard.</p>
+            </div>
+
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <label for="admin-email">Admin Email</label>
+                    <input type="email" id="admin-email" name="admin-email" required placeholder="Enter your admin email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin-password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="admin-password" name="admin-password" required placeholder="Enter your password">
+                        <button type="button" class="password-toggle" id="password-toggle" onclick="togglePassword()">👁</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="admin-btn" id="adminBtn">Access Dashboard</button>
+            </form>
+
+            <div class="back-link">
+                <a href="/">Back to Main Site</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('admin-login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('admin-email').value.trim().toLowerCase();
+            const password = document.getElementById('admin-password').value;
+            const adminBtn = document.getElementById('adminBtn');
+            const alert = document.getElementById('alert');
+            
+            if (!email || !password) {
+                showAlert('error', 'Please enter both email and password');
+                return;
+            }
+            
+            adminBtn.disabled = true;
+            adminBtn.textContent = 'Authenticating...';
+            alert.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('success', 'Admin login successful! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = '/admin';
+                    }, 1000);
+                } else {
+                    showAlert('error', result.message || 'Login failed. Please check your credentials.');
+                }
+            } catch (error) {
+                showAlert('error', 'Login failed. Please try again.');
+                console.error('Error:', error);
+            } finally {
+                adminBtn.disabled = false;
+                adminBtn.textContent = 'Access Dashboard';
+            }
+        });
+
+        function showAlert(type, message) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+        
+        document.getElementById('admin-email').focus();
+        
+        function togglePassword() {
+            const passwordInput = document.getElementById('admin-password');
+            const toggleBtn = document.getElementById('password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.textContent = '🚫';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.textContent = '👁';
+            }
+        }
+    </script>
+</body>
+</html>

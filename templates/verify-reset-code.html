@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Reset Code - Item Recovery Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8d5ff 0%, #f5f0ff 50%, #ffffff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        /* Left Panel */
+        .signin-panel {
+            flex: 1;
+            background: linear-gradient(180deg, #7b2cbf 0%, #9d4edd 50%, #c77dff 100%);
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+        }
+
+        .signin-panel h1 {
+            color: white;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .signin-panel p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* Right Panel */
+        .verify-panel {
+            flex: 1;
+            background: white;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .verify-panel h2 {
+            color: #1a1a1a;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #7b2cbf;
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .code-input {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 6px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .verify-btn {
+            width: 100%;
+            padding: 15px;
+            background: #7b2cbf;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .verify-btn:hover {
+            background: #6a1b9a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(123, 44, 191, 0.3);
+        }
+
+        .verify-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #7b2cbf;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .auth-container {
+                max-width: 900px;
+            }
+            
+            .signin-panel {
+                padding: 50px 40px;
+            }
+            
+            .verify-panel {
+                padding: 50px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .auth-container {
+                flex-direction: column;
+                max-width: 100%;
+                min-height: auto;
+                border-radius: 20px;
+            }
+
+            .signin-panel {
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
+                padding: 40px 30px;
+                min-height: 200px;
+            }
+
+            .verify-panel {
+                padding: 40px 30px;
+            }
+
+            .signin-panel h1 {
+                font-size: 32px;
+                margin-bottom: 15px;
+            }
+
+            .signin-panel p {
+                font-size: 14px;
+                margin-bottom: 30px;
+            }
+
+            .verify-panel h2 {
+                font-size: 28px;
+                margin-bottom: 25px;
+            }
+            
+            .form-group input {
+                padding: 12px 18px;
+                font-size: 14px;
+            }
+            
+            .code-input {
+                font-size: 20px;
+                letter-spacing: 4px;
+            }
+            
+            .verify-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .auth-container {
+                border-radius: 15px;
+            }
+
+            .signin-panel {
+                padding: 30px 20px;
+                min-height: 180px;
+            }
+
+            .verify-panel {
+                padding: 30px 20px;
+            }
+
+            .signin-panel h1 {
+                font-size: 28px;
+                margin-bottom: 10px;
+            }
+
+            .signin-panel p {
+                font-size: 13px;
+                margin-bottom: 25px;
+            }
+
+            .verify-panel h2 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .form-group label {
+                font-size: 13px;
+            }
+            
+            .form-group input {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            .code-input {
+                font-size: 18px;
+                letter-spacing: 3px;
+            }
+            
+            .verify-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .alert {
+                padding: 12px 15px;
+                font-size: 13px;
+            }
+            
+            .back-link a {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Left Panel -->
+        <div class="signin-panel">
+            <h1>Verify Code</h1>
+            <p>Enter the reset code sent to your email address</p>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="verify-panel">
+            <h2>Verify Reset Code</h2>
+            
+            <div id="alert" class="alert"></div>
+            
+            <form id="verifyForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                </div>
+
+                <div class="form-group">
+                    <label for="code">Verification Code</label>
+                    <input type="text" id="code" name="code" required placeholder="Enter 6-digit code" maxlength="6" class="code-input">
+                </div>
+
+                <button type="submit" class="verify-btn" id="verifyBtn">Verify Code</button>
+            </form>
+
+            <div class="back-link">
+                <a href="/login">Back to login</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const emailFromUrl = urlParams.get('email');
+        
+        if (emailFromUrl) {
+            document.getElementById('email').value = emailFromUrl;
+        }
+
+        document.getElementById('verifyForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const code = document.getElementById('code').value;
+            const verifyBtn = document.getElementById('verifyBtn');
+            const alert = document.getElementById('alert');
+            
+            if (!/^\d{6}$/.test(code)) {
+                showAlert('error', 'Please enter a valid 6-digit code.');
+                return;
+            }
+            
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = 'Verifying...';
+            alert.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/verify-reset-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        code: code
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showAlert('success', data.message);
+                    setTimeout(() => {
+                        window.location.href = `/reset-password?email=${encodeURIComponent(email)}&code=${code}`;
+                    }, 2000);
+                } else {
+                    showAlert('error', data.message);
+                }
+            } catch (error) {
+                showAlert('error', 'An error occurred. Please try again.');
+            } finally {
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = 'Verify Code';
+            }
+        });
+        
+        function showAlert(type, message) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+        
+        if (emailFromUrl) {
+            document.getElementById('code').focus();
+        } else {
+            document.getElementById('email').focus();
+        }
+    </script>
+</body>
+</html>

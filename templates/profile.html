@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Item Recovery Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 30px;
+            flex-wrap: nowrap;
+            gap: 0;
+            min-height: 90px;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #003366;
+            text-decoration: none;
+        }
+        
+        .navbar-brand i {
+            font-size: 2.2rem;
+            color: #003366;
+        }
+        
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.75rem 1.25rem;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: #003366;
+            background: rgba(30, 115, 190, 0.1);
+        }
+        
+        /* Page Header */
+        .page-header {
+            background: #003366;
+            padding: 0.5rem 0; /* further reduced */
+            margin-top: 90px;
+            color: white;
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+        
+        .page-header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+        
+        /* Stats Summary */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .stat-icon.lost { background: #f56565; }
+        .stat-icon.found { background: #48bb78; }
+        .stat-icon.pending { background: #ed8936; }
+        .stat-icon.resolved { background: #667eea; }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 20px;
+            color: #374151;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Reports Section */
+        .reports-section {
+            margin-top: 40px;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .section-title i {
+            color: #003366;
+        }
+        
+        .reports-grid {
+            display: grid;
+            gap: 25px;
+        }
+        
+        .result-card {
+            background: white;
+            padding: 25px 50px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #023E81;
+            transition: all 0.3s ease;
+            max-width: 100%;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .result-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .result-status.status-lost {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+        
+        .result-status.status-found {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .result-content {
+            margin-bottom: 15px;
+        }
+        
+        .result-content p {
+            margin-bottom: 12px;
+            color: #555;
+            font-size: 2.2rem !important;
+            line-height: 1.6 !important;
+        }
+        
+        .result-content strong {
+            color: #023E81;
+            font-size: 2.2rem !important;
+        }
+        
+        .result-image {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .result-image img {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-image img:hover {
+            transform: scale(1.05);
+        }
+        
+        .resolved-badge {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .result-card.resolved-card {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            opacity: 0.8;
+        }
+        
+        .result-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+        }
+        
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-edit {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+        
+        /* Edit Modal Styles */
+        .edit-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .edit-modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 800px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .edit-modal-header {
+            background: #003366;
+            color: white;
+            padding: 30px 40px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .edit-modal-header h2 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .edit-modal-body {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 30px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 700;
+            color: #374151;
+            font-size: 1.5rem;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #003366;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Larger placeholder text for better guidance */
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            font-size: 1.2rem;
+            color: #9ca3af;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+        
+        .btn-cancel {
+            background: #6b7280;
+            color: white;
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-cancel:hover {
+            background: #4b5563;
+        }
+        
+        .btn-save {
+            background: #003366;
+            color: white;
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 51, 102, 0.3);
+        }
+        
+        .close-modal-btn {
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+        
+        .close-modal-btn:hover {
+            opacity: 0.7;
+        }
+        
+        .no-reports {
+            text-align: center;
+            padding: 80px 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .no-reports i {
+            font-size: 80px;
+            color: #cbd5e1;
+            margin-bottom: 25px;
+        }
+        
+        .no-reports h3 {
+            font-size: 1.8rem;
+            color: #1a202c;
+            margin-bottom: 15px;
+        }
+        
+        .no-reports p {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+        
+        .btn-report {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-report:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 80px 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #003366;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .result-card {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .report-status {
+                justify-content: flex-start;
+            }
+            
+            .stats-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .navbar-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/home" class="navbar-brand">
+                <i class="fas fa-search-location"></i>
+                <span>Item Recovery Portal</span>
+            </a>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="/home" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="/report" class="nav-link">
+                    <i class="fas fa-plus-circle"></i> Report Item
+                </a>
+                <a href="/search" class="nav-link">
+                    <i class="fas fa-search"></i> Search
+                </a>
+                <a href="/contact" class="nav-link">
+                    <i class="fas fa-comments"></i> Contact
+                </a>
+                {% if admin_logged_in %}
+                <a href="/admin" class="nav-link">
+                    <i class="fas fa-cog"></i> Admin
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-user-circle"></i> My Profile</h1>
+            <p>View and track all your submitted reports</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Stats Summary -->
+        <div class="stats-summary">
+            <div class="stat-card">
+                <div class="stat-icon lost">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-number" id="lost-count">0</div>
+                <div class="stat-label">Lost Items</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon found">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-number" id="found-count">0</div>
+                <div class="stat-label">Found Items</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon pending">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-number" id="pending-count">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon resolved">
+                    <i class="fas fa-check-double"></i>
+                </div>
+                <div class="stat-number" id="resolved-count">0</div>
+                <div class="stat-label">Resolved</div>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div class="reports-section">
+            <h2 class="section-title">
+                <i class="fas fa-list"></i> My Reports
+            </h2>
+            
+            <div id="loading-section" class="loading">
+                <div class="spinner"></div>
+                <p>Loading your reports...</p>
+            </div>
+            
+            <div id="no-reports-section" class="no-reports" style="display: none;">
+                <i class="fas fa-inbox"></i>
+                <h3>No Reports Yet</h3>
+                <p>You haven't submitted any reports yet. Start by reporting a lost or found item!</p>
+                <a href="/report" class="btn-report">
+                    <i class="fas fa-plus-circle"></i> Report Item
+                </a>
+            </div>
+            
+            <div id="reports-container" class="reports-grid" style="display: none;"></div>
+        </div>
+    </main>
+
+    <!-- Edit Report Modal -->
+    <div id="editModal" class="edit-modal">
+        <div class="edit-modal-content">
+            <div class="edit-modal-header">
+                <h2><i class="fas fa-edit"></i> Edit Report</h2>
+                <span class="close-modal-btn" onclick="closeEditModal()">&times;</span>
+            </div>
+            <div class="edit-modal-body">
+                <form id="editReportForm" onsubmit="handleEditReport(event)">
+                    <input type="hidden" id="editReportId" value="">
+                    
+                    <div class="form-group">
+                        <label for="editName"><i class="fas fa-user"></i> Reporter Name</label>
+                        <input type="text" id="editName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editContact"><i class="fas fa-phone"></i> Contact</label>
+                        <input type="text" id="editContact" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editDescription"><i class="fas fa-align-left"></i> Description</label>
+                        <textarea id="editDescription" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editSecret"><i class="fas fa-lock"></i> Secret Details (Optional)</label>
+                        <textarea id="editSecret"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editImage"><i class="fas fa-image"></i> Image (Optional)</label>
+                        <input type="file" id="editImage" accept="image/*" onchange="previewEditImage(event)">
+                        <div style="margin-top: 10px;">
+                            <img id="editImagePreview" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; display: none; border: 1px solid #e2e8f0;" />
+                        </div>
+                    </div>
+                    
+                    <div id="editError" style="display: none; background: #fee2e2; color: #dc2626; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 1.1rem;"></div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+                        <button type="submit" class="btn-save">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let reports = [];
+        
+        // Load user reports
+        async function loadUserReports() {
+            try {
+                const response = await fetch('/api/user/reports');
+                const data = await response.json();
+                
+                if (data.success) {
+                    reports = data.reports;
+                    displayReports();
+                    updateStats();
+                } else {
+                    document.getElementById('loading-section').style.display = 'none';
+                    document.getElementById('no-reports-section').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error loading reports:', error);
+                document.getElementById('loading-section').style.display = 'none';
+            }
+        }
+        
+        // Update statistics
+        function updateStats() {
+            const lostCount = reports.filter(r => r.status === 'Lost').length;
+            const foundCount = reports.filter(r => r.status === 'Found').length;
+            const pendingCount = reports.filter(r => r.status_text === 'Pending').length;
+            const resolvedCount = reports.filter(r => r.status_text === 'Resolved').length;
+            
+            document.getElementById('lost-count').textContent = lostCount;
+            document.getElementById('found-count').textContent = foundCount;
+            document.getElementById('pending-count').textContent = pendingCount;
+            document.getElementById('resolved-count').textContent = resolvedCount;
+        }
+        
+        // Display reports
+        function displayReports() {
+            const container = document.getElementById('reports-container');
+            const loading = document.getElementById('loading-section');
+            
+            loading.style.display = 'none';
+            
+            if (reports.length === 0) {
+                document.getElementById('no-reports-section').style.display = 'block';
+                container.style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('no-reports-section').style.display = 'none';
+            container.style.display = 'grid';
+            
+            container.innerHTML = `<h3 style="color: #1e40af; margin-bottom: 30px; font-size: 1.5em;">Total ${reports.length} Report(s):</h3>` + reports.map(report => {
+                const statusClass = report.status.toLowerCase();
+                const statusEmoji = report.status === 'Lost' ? '🔴' : '🟢';
+                const resolvedBadge = report.resolved ? '<span class="resolved-badge">✅ Resolved by Admin</span>' : '';
+                
+                return `
+                    <div class="result-card ${report.resolved ? 'resolved-card' : ''}">
+                        <div class="result-header">
+                            <span class="result-status status-${statusClass}">${statusEmoji} ${report.status}</span>
+                            ${resolvedBadge}
+                        </div>
+                        <div class="result-content">
+                            <p><strong>Description:</strong> ${report.description}</p>
+                            <p><strong>Contact:</strong> ${report.contact}</p>
+                            <p><strong>Reporter:</strong> ${report.name}</p>
+                            <p><strong>Reported:</strong> ${report.timestamp}</p>
+                            ${report.category ? `<p><strong>Category:</strong> ${report.category}</p>` : ''}
+                            ${report.secret ? `<p><strong>Secret Detail:</strong> ${report.secret}</p>` : ''}
+                        </div>
+                        ${report.image ? `
+                            <div class="result-image">
+                                <img src="data:image/jpeg;base64,${report.image}" alt="Item Image" onclick="openImageModal(this.src)">
+                            </div>
+                        ` : ''}
+                        <div class="result-actions">
+                            <button class="btn-action btn-edit" onclick="openEditModal(${report.id}, '${report.name}', '${report.contact}', '${report.description.replace(/'/g, "\\'")}', '${report.secret ? report.secret.replace(/'/g, "\\'") : ''}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deleteReport(${report.id})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        let currentEditingReportId = null;
+        
+        // Delete report function
+        async function deleteReport(reportId) {
+            if (!confirm('Are you sure you want to delete this report? This action cannot be undone.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/user/delete-report/${reportId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Report deleted successfully!');
+                    loadUserReports(); // Reload reports
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                alert('An error occurred while deleting the report.');
+            }
+        }
+        
+        // Open edit modal
+        function openEditModal(id, name, contact, description, secret) {
+            currentEditingReportId = id;
+            document.getElementById('editReportId').value = id;
+            document.getElementById('editName').value = name;
+            document.getElementById('editContact').value = contact;
+            document.getElementById('editDescription').value = description;
+            document.getElementById('editSecret').value = secret || '';
+            document.getElementById('editError').style.display = 'none';
+            // Reset image input and preview
+            const fileInput = document.getElementById('editImage');
+            fileInput.value = '';
+            const preview = document.getElementById('editImagePreview');
+            preview.style.display = 'none';
+            preview.src = '';
+            document.getElementById('editModal').style.display = 'block';
+        }
+        
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('editReportForm').reset();
+            currentEditingReportId = null;
+        }
+        
+        // Handle edit report form submission
+        let editImageBase64 = null;
+
+        function previewEditImage(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) { editImageBase64 = null; return; }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                editImageBase64 = e.target.result; // data URL
+                const preview = document.getElementById('editImagePreview');
+                preview.src = editImageBase64;
+                preview.style.display = 'inline-block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function handleEditReport(event) {
+            event.preventDefault();
+            
+            const reportId = currentEditingReportId;
+            const name = document.getElementById('editName').value;
+            const contact = document.getElementById('editContact').value;
+            const description = document.getElementById('editDescription').value;
+            const secret = document.getElementById('editSecret').value;
+            
+            try {
+                const response = await fetch(`/api/user/edit-report/${reportId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        contact: contact,
+                        description: description,
+                        secret: secret,
+                        image: editImageBase64
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Report updated successfully!');
+                    closeEditModal();
+                    loadUserReports(); // Reload reports
+                } else {
+                    document.getElementById('editError').textContent = data.message;
+                    document.getElementById('editError').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Edit error:', error);
+                document.getElementById('editError').textContent = 'An error occurred while updating the report.';
+                document.getElementById('editError').style.display = 'block';
+            }
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+        
+        function openImageModal(src) {
+            // Create modal for image viewing
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); justify-content: center; align-items: center; display: flex;';
+            
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = 'position: relative; max-width: 90%; max-height: 90%;';
+            
+            const closeBtn = document.createElement('span');
+            closeBtn.style.cssText = 'position: absolute; top: -30px; right: -30px; color: #fff; font-size: 40px; font-weight: bold; cursor: pointer;';
+            closeBtn.innerHTML = '&times;';
+            
+            const img = document.createElement('img');
+            img.src = src;
+            img.style.cssText = 'max-width: 100%; max-height: 100%;';
+            
+            closeBtn.onclick = () => {
+                if (document.body.contains(modal)) {
+                    document.body.removeChild(modal);
+                }
+            };
+            modal.onclick = (e) => {
+                if (e.target === modal && document.body.contains(modal)) {
+                    document.body.removeChild(modal);
+                }
+            };
+            
+            modalContent.appendChild(closeBtn);
+            modalContent.appendChild(img);
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+        }
+        
+        function toggleMobileMenu() {
+            const menu = document.getElementById('navbarMenu');
+            const toggle = document.querySelector('.mobile-menu-toggle i');
+            if (menu && toggle) {
+                menu.classList.toggle('active');
+                if (menu.classList.contains('active')) {
+                    toggle.classList.remove('fa-bars');
+                    toggle.classList.add('fa-times');
+                } else {
+                    toggle.classList.remove('fa-times');
+                    toggle.classList.add('fa-bars');
+                }
+            }
+        }
+        
+        // Load reports on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserReports();
+        });
+    </script>
+</body>
+</html>
+

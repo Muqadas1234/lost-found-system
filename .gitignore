@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Environment
+.env
+.venv
+env/
+venv/
+
+# Database files (keep only one)
+# Uncomment if you want to ignore database files
+*.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Documentation (generated files)
+PERFORMANCE_ANALYSIS.md
+TEST_DATA*.md
+*_SETUP.md
+
+# Test files
+test_*.py
+add_test_data.py
+quick_remove.py
+remove_user.py
+unregister.py
+
+# Backup files
+*.docx
+*.bak
+*.old
+

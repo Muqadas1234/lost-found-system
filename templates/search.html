@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Items - Item Recovery Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Match Home navbar sizing */
+        .navbar .container {
+            padding: 1.5rem 30px;
+            min-height: 90px;
+        }
+        .navbar-brand { font-size: 1.8rem; }
+        .nav-link { font-size: 20px; }
+        /* Custom styling for thin blue header strip */
+        .page-header {
+            background: #003366;
+            padding: 1.5rem 0 !important;
+            margin-top: 110px;
+            color: white;
+            text-align: center;
+        }
+        
+        .page-header-content h1 {
+            font-size: 2.4rem !important;
+            margin-bottom: 0.3rem !important;
+        }
+        
+        .page-header-content p {
+            font-size: 1.3rem !important;
+            margin: 0 !important;
+            text-align: center !important;
+            display: block !important;
+            width: 100% !important;
+        }
+        
+        .page-header-content {
+            text-align: center !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .page-header-content h1 {
+            text-align: center !important;
+            display: block !important;
+            width: 100% !important;
+        }
+        
+        .page-header {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Professional Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <i class="fas fa-search-location"></i>
+                <span>Item Recovery Portal</span>
+            </div>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="/home" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="/report" class="nav-link">
+                    <i class="fas fa-plus-circle"></i> Report Item
+                </a>
+                <a href="/search" class="nav-link active">
+                    <i class="fas fa-search"></i> Search
+                </a>
+                <a href="/contact" class="nav-link">
+                    <i class="fas fa-comments"></i> Contact
+                </a>
+                {% if admin_logged_in %}
+                <a href="/admin" class="nav-link">
+                    <i class="fas fa-cog"></i> Admin
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-search"></i> Search Items</h1>
+                <p>Search for lost or found items</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Search Section -->
+            <section class="section">
+                <div class="search-container">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <input type="text" id="search-input" placeholder="Search by description, 'all', 'lost', or 'found'" class="search-input">
+                            <button id="search-btn" class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="search-tips">
+                            <h4><i class="fas fa-lightbulb"></i> Search Tips:</h4>
+                            <ul>
+                                <li>Type "all" to see all items</li>
+                                <li>Type "lost" to see only lost items</li>
+                                <li>Type "found" to see only found items</li>
+                                <li>Describe the item (e.g., "black iPhone", "red backpack")</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div id="search-results" class="search-results"></div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <!-- Modal for Image Preview -->
+    <div id="image-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modal-image" src="" alt="Item Image">
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('navbarMenu');
+            const toggle = document.querySelector('.mobile-menu-toggle i');
+            if (menu && toggle) {
+                menu.classList.toggle('active');
+                if (menu.classList.contains('active')) {
+                    toggle.classList.remove('fa-bars');
+                    toggle.classList.add('fa-times');
+                } else {
+                    toggle.classList.remove('fa-times');
+                    toggle.classList.add('fa-bars');
+                }
+            }
+        }
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchBtn = document.getElementById('search-btn');
+            const searchInput = document.getElementById('search-input');
+            
+            // Search button functionality
+            if (searchBtn) {
+                searchBtn.addEventListener('click', performSearch);
+            }
+            
+            // Enter key functionality
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+            }
+            
+            // Auto-refresh search results every 30 seconds if there are results
+            setInterval(function() {
+                const resultsContainer = document.getElementById('search-results');
+                if (resultsContainer && resultsContainer.innerHTML.trim() !== '') {
+                    // Silently refresh to check for deleted reports
+                    refreshSearchResults();
+                }
+            }, 30000); // 30 seconds
+        });
+        
+        // Show loading indicator
+        function showLoading(show) {
+            const searchBtn = document.getElementById('search-btn');
+            
+            if (show) {
+                if (searchBtn) searchBtn.disabled = true;
+            } else {
+                if (searchBtn) searchBtn.disabled = false;
+            }
+        }
+        
+        // Show toast notification
+        function showToast(type, message) {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 20px 30px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                font-size: 18px;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            // Set background color based on type
+            if (type === 'success') {
+                toast.style.backgroundColor = '#10b981';
+            } else if (type === 'error') {
+                toast.style.backgroundColor = '#ef4444';
+            } else if (type === 'warning') {
+                toast.style.backgroundColor = '#f59e0b';
+            }
+            
+            document.body.appendChild(toast);
+            
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Item - Item Recovery Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Match Home navbar sizing */
+        .navbar .container {
+            padding: 1.5rem 30px;
+            min-height: 90px;
+        }
+        .navbar-brand { font-size: 1.8rem; }
+        .nav-link { font-size: 20px; }
+        /* Custom styling for thin blue header strip */
+        .page-header {
+            background: #003366;
+            padding: 1.5rem 0 !important;
+            margin-top: 110px; /* offset larger navbar */
+            color: white;
+            text-align: center;
+        }
+        
+        .page-header-content h1 {
+            font-size: 2.4rem !important;
+            margin-bottom: 0.3rem !important;
+        }
+        
+        .page-header-content p {
+            font-size: 1.3rem !important;
+            margin: 0 !important;
+            text-align: center !important;
+            display: block !important;
+            width: 100% !important;
+        }
+        
+        .page-header-content {
+            text-align: center !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .page-header-content h1 {
+            text-align: center !important;
+            display: block !important;
+            width: 100% !important;
+        }
+        
+        .page-header {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        /* Card text alignment fixes */
+        .report-type-card {
+            text-align: center !important;
+        }
+        
+        .report-type-card h3 {
+            text-align: center !important;
+            margin-bottom: 0.8rem !important;
+        }
+        
+        .report-type-card p {
+            text-align: center !important;
+            margin-bottom: 1.2rem !important;
+            line-height: 1.4 !important;
+        }
+        
+        .report-type-card .btn {
+            text-align: center !important;
+            margin: 0 auto !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Professional Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <i class="fas fa-search-location"></i>
+                <span>Item Recovery Portal</span>
+            </div>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="navbar-menu" id="navbarMenu">
+                <a href="/home" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="/report" class="nav-link active">
+                    <i class="fas fa-plus-circle"></i> Report Item
+                </a>
+                <a href="/search" class="nav-link">
+                    <i class="fas fa-search"></i> Search
+                </a>
+                <a href="/contact" class="nav-link">
+                    <i class="fas fa-comments"></i> Contact
+                </a>
+                {% if admin_logged_in %}
+                <a href="/admin" class="nav-link">
+                    <i class="fas fa-cog"></i> Admin
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1><i class="fas fa-plus-circle"></i> Report Lost or Found Item</h1>
+                <p>Report what you've lost or found on campus</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Report Type Selection -->
+            <section class="section">
+                <div class="report-type-selection">
+                    <div class="report-cards">
+                        <div class="report-type-card lost-card" data-type="lost">
+                            <div class="card-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h3>Lost Item</h3>
+                            <p>Report an item you've lost on campus</p>
+                            <button class="btn btn-outline">Report Lost Item</button>
+                        </div>
+                        
+                        <div class="report-type-card found-card" data-type="found">
+                            <div class="card-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h3>Found Item</h3>
+                            <p>Report an item you've found on campus</p>
+                            <button class="btn btn-outline">Report Found Item</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Form -->
+                <div id="report-form" class="form-container" style="display: none;">
+                    <form id="item-form" class="custom-form">
+                        <div class="form-header">
+                            <h2 id="form-title">Report Item</h2>
+                            <p id="form-subtitle">Please provide detailed information about the item</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact">Contact Info (Email)</label>
+                            <input type="email" id="contact" name="contact" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="description">Item Description</label>
+                            <textarea id="description" name="description" placeholder="Describe the item in detail (including brand, color, specific features)" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="secret">Secret Detail (Optional)</label>
+                            <input type="text" id="secret" name="secret" placeholder="e.g., sticker, initials, etc.">
+                            <small class="form-help">This helps verify ownership when someone claims the item</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="image">Upload Item Image</label>
+                            <input type="file" id="image" name="image" accept="image/*">
+                            <div id="image-preview" class="image-preview"></div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn">
+                                <i class="fas fa-paper-plane"></i>
+                                Submit Report
+                            </button>
+                            <button type="button" class="cancel-btn" onclick="hideReportForm()">
+                                <i class="fas fa-times"></i>
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Results Display -->
+                <div id="report-results" class="results-container" style="display: none;"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+        <p>Processing...</p>
+    </div>
+
+    <!-- Modal for Image Preview -->
+    <div id="image-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modal-image" src="" alt="Item Image">
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('navbarMenu');
+            const toggle = document.querySelector('.mobile-menu-toggle i');
+            if (menu && toggle) {
+                menu.classList.toggle('active');
+                if (menu.classList.contains('active')) {
+                    toggle.classList.remove('fa-bars');
+                    toggle.classList.add('fa-times');
+                } else {
+                    toggle.classList.remove('fa-times');
+                    toggle.classList.add('fa-bars');
+                }
+            }
+        }
+        // Report functionality will be added here
+    </script>
+</body>
+</html>
