@@ -447,11 +447,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 📞 Support
 
-For technical support or questions:
-- 📧 Email: [Your Email]
-- 🐛 Issues: [GitHub Issues](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/issues)
 
 ---
 
